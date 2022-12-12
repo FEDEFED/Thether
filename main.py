@@ -1,30 +1,45 @@
 import socket
 from _thread import *
 
-##################Backend###################
+
+#############> Backend <#############
+my_address=
+terminate_char=
+friends=
+
 #Utils
 def fileget(name):
     pass
+
 def filenamesget(name):
     pass
+
 #Low level networking
 def look_for_friends():
     while True:
-        for i in friends.difference(ac):
+        for i in friends.difference(ac): #&
             server.connect(i)
+
 def connection_man():
-    ac=friends
+    ac=set()
+    requestbuffer={}
+    responsebuffer={}
     start_new_thread(look_for_friends)
+    start_new_thread(get_reqs)
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server.bind((IP_address, 69))
+    server.bind((my_address, 69))
     server.listen(100)
     while True:
         conn, addr = server.accept()
-        ac.update(conn)
-        
+        if conn:
+            ac.update(conn)
+            responsebuffer.update({conn:b''})
+            requestbuffer.update({conn:b''})
+
 def send(who,what):
     who.send(repr(what))
+
 def send_req(who,wath):
     online=send(who,what)
     if online:
@@ -33,11 +48,19 @@ def send_req(who,wath):
         r=responsebuffer[who]
         responsebuffer[who]=b''
         return r
-def get_req(u):
-    if u.isinstance(dict):
-        globals()[u[0]](u[1])
-    else:
-        responsebuffer=u
+
+def get_reqs():
+    while True:
+        for i in ac:
+            mess = i.recv(2048)
+            requestbuffer[who]+=mess
+            if terminate_char in requestbuffer:
+                if u.isinstance(dict):
+                    globals()[u[0]](u[1])
+                else:
+                    responsebuffer[who]=u
+                requestbuffer=b''
+
 #High level networking
 def get_after(forwho,time):
     u=set()
@@ -53,12 +76,13 @@ def get_net(iter):
         for i in friends:
             f.update(send_req(i,['get_net',(iter-1)]))
         send(forwho,f)
-    else:
-        send(forwho,friends)
 
 def get_new_friends():
     f=set()
     for i in friends:
         f.update(send_req(i,['get_net',4]))
     return f.difference(friends)
-    
+
+#############> Frontend <#############
+
+
