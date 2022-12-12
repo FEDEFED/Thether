@@ -84,5 +84,48 @@ def get_new_friends():
     return f.difference(friends)
 
 #############> Frontend <#############
+from kivy.lang import Builder
+from kivymd.app import MDApp
+
+KV='''
+MDScreen:
+    MDBottomNavigation:
+        #panel_color: "#eeeaea"
+        selected_color_background: "orange"
+        text_color_active: "lightgrey"
+        MDBottomNavigationItem:
+            name: 'chats'
+            text: 'chat'
+            icon: 'chat'
+
+            MDLabel:
+                text: 'Y net'
+                halign: 'center'
+
+        MDBottomNavigationItem:
+            name: 'net'
+            text: 'the net'
+            icon: 'spider-web'
+
+            MDLabel:
+                text: 'Thethers'
+                halign: 'center'
+
+        MDBottomNavigationItem:
+            name: 'explore'
+            text: 'xplore'
+            icon: 'map-search'
+
+            MDLabel:
+                text: 'Y net'
+                halign: 'center'
+'''
+
+class Test(MDApp):
+
+    def build(self):
+        self.theme_cls.theme_style = "Dark"
+        return Builder.load_string(KV)
 
 
+Test().run()
